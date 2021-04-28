@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="emap">#FFC5DE2E</color>
+    <color name="colorSweetError">#9e9e9e</color>
 </resources>

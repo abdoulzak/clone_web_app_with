@@ -2,4 +2,6 @@
     <string name="app_name">EMAP</string>
     <string name="app_name_2">E M A P</string>
     <string name="retry">Réessayer</string>
+    <string name="error_sorry_not_able_to_load">Désolé, nous n\'avons pas pu charger la page </string>
+    <string name="come_later_again">Veuillez verifier votre connexion internet ou revenez plus tard…</string>
 </resources>

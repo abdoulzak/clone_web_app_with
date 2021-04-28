@@ -3,13 +3,18 @@ package com.example.a1020tech;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,7 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       private final String TAG = MainActivity.class.getSimpleName();
       private WebView mWebView = null;
       private final String URL = "http://env-emap.eba-jj5pnmwy.us-west-2.elasticbeanstalk.com/";
-      private LinearLayout mlLayoutRequestError = null, splashScreen = null;
+      private LinearLayout mlLayoutRequestError = null;
+      //private LinearLayout splashScreen = null;
       private Handler mhErrorLayoutHide = null;
 
       private boolean mbErrorOccured = false;
@@ -33,12 +39,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           super.onCreate(savedInstanceState);
           setContentView(R.layout.activity_main);
 
-          ((Button) findViewById(R.id.btnRetry)).setOnClickListener(this);
-          mlLayoutRequestError = (LinearLayout) findViewById(R.id.lLayoutRequestError);
-          splashScreen = (LinearLayout) findViewById(R.id.splash);
+          findViewById(R.id.btnRetry).setOnClickListener(this);
+          mlLayoutRequestError = findViewById(R.id.lLayoutRequestError);
+          //splashScreen = (LinearLayout) findViewById(R.id.splash);
           mhErrorLayoutHide = getErrorLayoutHideHandler();
 
-          mWebView = (WebView) findViewById(R.id.webviewMain);
+          mWebView = findViewById(R.id.webviewMain);
           mWebView.setWebViewClient(new MyWebViewClient());
 
           //activation du JS
@@ -48,17 +54,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           mWebView.loadUrl(URL);
 
           //splash screen
-          splashScreen.setVisibility(View.VISIBLE);
+          //splashScreen.setVisibility(View.VISIBLE);
           mlLayoutRequestError.setVisibility(View.GONE);
           mWebView.setVisibility(View.GONE);
-          new Handler().postDelayed(new Runnable() {
+          /*new Handler().postDelayed(new Runnable() {
               @Override
               public void run() {
                   mbReloadPressed = true;
                   mWebView.reload();
                   mbErrorOccured = false;
               }
-          }, 2000);
+          }, 2000);*/
       }
 
       @Override
@@ -97,7 +103,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       class MyWebViewClient extends WebViewClient {
           @Override
           public boolean shouldOverrideUrlLoading(WebView view, String url) {
-              return super.shouldOverrideUrlLoading(view, url);
+              if (url.startsWith("https://web.whatsapp.com/") ||
+                      url.startsWith("https://www.facebook.com/") ||
+                        url.contains("texte-loi/downloard/")) {
+                  try {
+                      Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                      view.getContext().startActivity(intent);
+                      return true;
+                  } catch (Exception e) {
+                      //Log.i(TAG, "shouldOverrideUrlLoading Exception:" + e);
+                      return true;
+                  }
+              }else return false;
+
+              //return super.shouldOverrideUrlLoading(view, url);
           }
 
           @Override
@@ -112,14 +131,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
           @Override
           public void onPageFinished(WebView view, String url) {
-              if (mbErrorOccured == false && mbReloadPressed) {
+              if (!mbErrorOccured && mbReloadPressed) {
                   hideErrorLayout();
                   mbReloadPressed = false;
               }
 
               super.onPageFinished(view, url);
           }
-
           @Override
           public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
               mbErrorOccured = true;
@@ -144,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       private void showErrorLayout() {
           mlLayoutRequestError.setVisibility(View.VISIBLE);
           mWebView.setVisibility(View.GONE);
-          splashScreen.setVisibility(View.GONE);
+          //splashScreen.setVisibility(View.GONE);
       }
 
       private void hideErrorLayout() {
@@ -157,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
               public void handleMessage(Message msg) {
                   mlLayoutRequestError.setVisibility(View.GONE);
                   mWebView.setVisibility(View.VISIBLE);
-                  splashScreen.setVisibility(View.GONE);
+                  //splashScreen.setVisibility(View.GONE);
                   super.handleMessage(msg);
               }
           };
