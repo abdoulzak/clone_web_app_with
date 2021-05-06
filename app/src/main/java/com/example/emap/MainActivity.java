@@ -1,24 +1,20 @@
-package com.example.a1020tech;
+package com.example.emap;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           //splash screen
           //splashScreen.setVisibility(View.VISIBLE);
           mlLayoutRequestError.setVisibility(View.GONE);
-          mWebView.setVisibility(View.GONE);
+          mWebView.setVisibility(View.VISIBLE);
           /*new Handler().postDelayed(new Runnable() {
               @Override
               public void run() {
@@ -103,9 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       class MyWebViewClient extends WebViewClient {
           @Override
           public boolean shouldOverrideUrlLoading(WebView view, String url) {
-              if (url.startsWith("https://web.whatsapp.com/") ||
+              if (url.startsWith("https://wa.me/") ||
                       url.startsWith("https://www.facebook.com/") ||
-                        url.contains("texte-loi/downloard/")) {
+                      url.endsWith(".pdf") ||
+                      url.contains("/d23")) {
                   try {
                       Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                       view.getContext().startActivity(intent);
